@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hax — a minimalist, terminal-native coding agent</title>
+<meta name="description"
+      content="hax is a minimalist, terminal-native coding agent written in C. A single small binary that streams Markdown in your terminal and works with any LLM provider.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preload" href="fonts/source-code-pro-latin.woff2" as="font" type="font/woff2"
+      crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1>hax</h1>
+  <p class="tagline">A minimalist, terminal-native coding agent
+     written in C.</p>
+  <nav class="actions">
+    <a class="btn btn-primary" href="https://github.com/OleksandrChekhovskyi/hax">
+      <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      GitHub</a>
+    <a class="btn" href="#install">Get started</a>
+  </nav>
+  <figure class="shot">
+    <img src="screenshot.png" width="930" height="758"
+         alt="hax answering a question about its own source using a local llama.cpp model">
+  </figure>
+</header>
+
+<main>
+  <section class="features" aria-label="Key features">
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Lightweight by design</h2>
+      <p>A single native C binary with a small dependency set. Uses a few MBs of memory,
+         so the RAM stays free for your local LLMs.</p>
+    </div>
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Terminal-native presentation</h2>
+      <p>Streaming Markdown formatting and live tool output, reflowed for your terminal.
+         Only the current line redraws — native scrollback is preserved.</p>
+    </div>
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Inspectable</h2>
+      <p>See exactly what was sent to the model and what it replied in a usable transcript
+         view (Ctrl+T). Optionally collect a detailed wire protocol trace.</p>
+    </div>
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Any provider, any model</h2>
+      <p>OpenAI, Anthropic, Codex (via ChatGPT subscription), OpenRouter, llama.cpp,
+         Ollama, and API-compatible endpoints.</p>
+    </div>
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Automation-friendly</h2>
+      <p>Interactive REPL and <code>-p</code> one-shot mode, with clean stdout for scripts
+         and agents, and resume hints on stderr.</p>
+    </div>
+  </section>
+
+  <section id="install" class="install">
+    <h2><span class="prompt">$</span> Get started</h2>
+    <p>Prebuilt packages are on the roadmap. For now, hax builds from source in seconds —
+       all you need is a C compiler, libcurl, and jansson.</p>
+    <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax
+cd hax
+scripts/install_deps.sh   # or: apt/pacman/brew install the deps by hand
+meson setup build
+meson compile -C build
+./build/hax</code></pre>
+    <p>Then point it at a provider and go:</p>
+    <pre><code>hax                          # interactive REPL
+hax -p "list TODOs"          # run one prompt, print the final answer
+hax -c                       # continue the latest session for this directory</code></pre>
+    <p>See the <a href="https://github.com/OleksandrChekhovskyi/hax#readme">README</a> for
+       provider setup and the full documentation.</p>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <a href="https://github.com/OleksandrChekhovskyi/hax"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg> GitHub</a> ·
+    <a href="https://github.com/OleksandrChekhovskyi/hax/blob/master/LICENSE">MIT License</a>
+  </p>
+</footer>
+
+</body>
+</html>

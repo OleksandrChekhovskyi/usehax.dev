@@ -1,0 +1,206 @@
+/* Palette transcribed from hax's own dark theme (src/terminal/theme.c):
+ * chrome cyan 37, chrome-dim 23, stance/model teal 38, user terracotta 173.
+ * Same logic as the TUI: cool colors are the machine, the one warm color
+ * marks the user — so terracotta goes on prompts and calls to action. */
+/* Same face as the screenshot's terminal. Self-hosted variable font
+ * (latin subset, weights 400-700, OFL — see fonts/OFL.txt); the system
+ * stack below covers glyphs outside the subset and the load window. */
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(fonts/source-code-pro-latin.woff2) format("woff2");
+}
+
+:root {
+  --bg: #0b0f10;
+  --bg-raised: #101617;
+  --fg: #ccd4d4;
+  --fg-dim: #879494;
+  --chrome: #00afaf;
+  --chrome-dim: #005f5f;
+  --stance: #00afd7;
+  --accent: #d7875f;
+  --border: #12302f;
+  --mono: "Source Code Pro", ui-monospace, "SF Mono", "Cascadia Code",
+          "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+main, .hero, footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+a {
+  color: var(--stance);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.prompt {
+  color: var(--accent);
+}
+
+.marker {
+  color: var(--stance);
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.hero {
+  padding-top: 4rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 10vw, 5rem);
+  letter-spacing: 0.04em;
+  margin: 0.5rem 0 1rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.tagline {
+  font-size: 1.1rem;
+  margin: 0 0 2rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid var(--chrome-dim);
+  border-radius: 6px;
+  color: var(--chrome);
+}
+
+.btn:hover {
+  text-decoration: none;
+  border-color: var(--chrome);
+  background: rgba(0, 175, 175, 0.08);
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #e29a73;
+  border-color: #e29a73;
+}
+
+.shot {
+  margin: 0;
+}
+
+/* The capture carries its own window frame and shadow inside transparent
+ * margins, so any border, radius, or shadow here would outline the
+ * invisible bounding box instead of the window. */
+.shot img {
+  width: 100%;
+  max-width: 930px;
+  height: auto;
+}
+
+/* Features */
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  padding: 3rem 0;
+}
+
+.feature {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+}
+
+.feature h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.feature p {
+  margin: 0;
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+}
+
+code {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+
+/* Install */
+
+.install {
+  padding-bottom: 4rem;
+}
+
+.install h2 {
+  font-size: 1.5rem;
+}
+
+.install pre {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+
+.install pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+/* Footer */
+
+footer {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 0.9rem;
+}
