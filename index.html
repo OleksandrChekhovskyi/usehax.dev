@@ -60,18 +60,26 @@
 
   <section id="install" class="install">
     <h2><span class="prompt">$</span> Get started</h2>
-    <p>Prebuilt packages are on the roadmap. For now, hax builds from source in seconds —
-       all you need is a C compiler, libcurl, and jansson.</p>
+    <p>hax runs on Linux and macOS (on Windows, use WSL). With
+       <a href="https://brew.sh">Homebrew</a>:</p>
+    <pre><code>brew install oleksandrchekhovskyi/hax/hax</code></pre>
+    <p>On Linux, prebuilt static binaries (x86_64 and aarch64) are attached to the
+       <a href="https://github.com/OleksandrChekhovskyi/hax/releases/latest">latest
+       release</a> — unpack <code>hax</code> into any directory on your <code>PATH</code>.
+       Or build from source in seconds; all it takes is a C compiler, libcurl, and jansson:</p>
     <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax
 cd hax
-scripts/install_deps.sh   # or: apt/pacman/brew install the deps by hand
-meson setup build
-meson compile -C build
-./build/hax</code></pre>
-    <p>Then point it at a provider and go:</p>
+scripts/install_deps.sh   # Debian/Ubuntu, Fedora, Arch, openSUSE, Alpine, macOS
+make                      # the binary is now at ./build/hax
+make install              # optional; may prompt for sudo</code></pre>
+    <p>Then run it:</p>
     <pre><code>hax                          # interactive REPL
 hax -p "list TODOs"          # run one prompt, print the final answer
 hax -c                       # continue the latest session for this directory</code></pre>
+    <p>hax picks up a configured provider automatically — an API key in the environment, a
+       <code>codex</code> CLI login, or a running local server like llama.cpp or Ollama. If
+       nothing is set up yet, type <code>/provider</code> in the REPL: the picker lists every
+       provider along with what each one needs.</p>
     <p>See the <a href="https://github.com/OleksandrChekhovskyi/hax#readme">README</a> for
        provider setup and the full documentation.</p>
   </section>
