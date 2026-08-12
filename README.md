@@ -48,19 +48,32 @@ of `tools/make-poster.sh` — then re-running that script.
 want roughly 1.91:1 and a terminal is 1.17:1, so it is composed — wordmark, tagline, and the
 screen running off the bottom edge — rather than cropped, and its terminal is set larger
 because a card is shown at about half size in a feed. Twitter reads the `og:*` tags, so
-`index.html` only sets the card type separately.
+`index.html` only sets the card type separately. Its frame is an early one, unlike the
+poster's: a preview is met cold, with no page around it to say what this is, so it wants the
+banner in shot. `og:image:alt` describes that frame.
 
-To replace the demo, record at 80x30 and regenerate both images:
+`demo.gif` and `demo-still.png` are the odd ones out — the page never loads them. They exist
+for external listings, which take a URL rather than embedding a player, and hold the
+recording's first turn alone: one question, answered, in 32 seconds. agg draws them in the
+page's typeface, so they sit beside the poster and the card without looking like a different
+program.
+
+To replace the demo, record at 80x30 and regenerate the images:
 
 ```sh
 asciinema rec --cols 80 --rows 30 demo.cast
-tools/make-poster.sh 75          # seconds into the recording to freeze
-tools/make-poster.sh --card 75
+tools/make-poster.sh          # poster, freezes 75s in
+tools/make-poster.sh --card   # link preview, freezes 32.2s in
+tools/make-gif.py             # demo.gif and demo-still.png
 ```
 
+Those frozen frames suit this recording specifically, so a new one needs new numbers: pass
+seconds to `make-poster.sh`, or edit the constants at the top of `make-gif.py`.
+
 `make-poster.sh` drives the real player headlessly, in the same font and geometry the page
-uses, so swapping the poster for the player moves nothing. The frame it captures is chosen
-to show hax mid-task; playback still starts at the beginning of the recording, so the
-picture changes on click even though the layout does not. It needs chromium and python3.
-If the new recording is not 80x30, update the sizes near the top of the script and the
-`aspect-ratio` on `.demo` in `style.css` to match.
+uses, so swapping the poster for the player moves nothing. The poster's frame is chosen to
+show hax mid-task; playback still starts at the beginning of the recording, so the picture
+changes on click even though the layout does not. It needs chromium and python3;
+`make-gif.py` needs agg, Pillow, and the Source Code Pro and DejaVu fonts. If the new recording is not 80x30,
+update the sizes near the top of `make-poster.sh` and the `aspect-ratio` on `.demo` in
+`style.css` to match.

@@ -11,7 +11,10 @@
 # the picture changes on click even though the layout does not.
 #
 # The card is the Open Graph link preview. Social cards want about 1.91:1 and the terminal
-# is 1.17:1, so the card is composed around the screen rather than cropped out of it.
+# is 1.17:1, so the card is composed around the screen rather than cropped out of it. Its
+# frame is an early one, unlike the poster's: a preview is met cold, so it wants the banner
+# in shot. Only about the top half of the screen survives the crop, which is what the frame
+# is chosen against.
 #
 # Needs chromium (or Chrome) and python3; Pillow, if present, palettizes the result to
 # roughly half the bytes with no visible difference.
@@ -22,11 +25,14 @@ if [ "${1:-}" = "--card" ]; then
     mode=card
     shift
 fi
-at="${1:-75}"
+at="${1:-}"
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 port=8799
 
 if [ "$mode" = card ]; then
+    # Last moment holding both the banner and a full screen of output; a tenth of a second
+    # later the top line scrolls away. Shared with the still in tools/make-gif.py.
+    at="${at:-32.2}"
     # 1200x630 is what every scraper expects. The terminal is set larger than it is on the
     # page because a card is shown at roughly half size in a feed.
     out=demo-card.png
@@ -35,6 +41,7 @@ if [ "$mode" = card ]; then
     height=630
     scale=1
 else
+    at="${at:-75}"
     # The size the player draws at on the page: 80 columns of 30 rows at exactly 16px,
     # rendered at 2x for high-DPI screens. Keep in step with style.css.
     out=demo-poster.png
@@ -186,7 +193,11 @@ from PIL import Image
 
 path = sys.argv[1]
 im = Image.open(path).convert("RGB")
-im.quantize(colors=256, method=Image.MEDIANCUT, dither=Image.NONE).save(path, optimize=True)
+# The enums are spelled out because Pillow builds its module-level aliases with setattr,
+# which no type checker can see and which flattens six enums into one namespace.
+im.quantize(
+    colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE
+).save(path, optimize=True)
 PY
 
 echo "make-poster: wrote $out at t=${at}s"
