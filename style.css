@@ -2,7 +2,7 @@
  * chrome cyan 37, chrome-dim 23, stance/model teal 38, user terracotta 173.
  * Same logic as the TUI: cool colors are the machine, the one warm color
  * marks the user — so terracotta goes on prompts and calls to action. */
-/* Same face as the screenshot's terminal. Self-hosted variable font
+/* Same face as the recording's terminal. Self-hosted variable font
  * (latin subset, weights 400-700, OFL — see fonts/OFL.txt); the system
  * stack below covers glyphs outside the subset and the load window. */
 @font-face {
@@ -36,8 +36,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--mono);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.55;
 }
 
 main, .hero, footer {
@@ -71,20 +71,20 @@ a:hover {
 }
 
 .hero {
-  padding-top: 4rem;
+  padding-top: 3rem;
   text-align: center;
 }
 
 .hero h1 {
   font-size: clamp(3rem, 10vw, 5rem);
   letter-spacing: 0.04em;
-  margin: 0.5rem 0 1rem;
+  margin: 0.5rem 0;
   font-weight: bold;
   color: #fff;
 }
 
 .tagline {
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin: 0 0 2rem;
 }
 
@@ -125,20 +125,179 @@ a:hover {
   margin: 0;
 }
 
-/* The capture carries its own window frame and shadow inside transparent
- * margins, so any border, radius, or shadow here would outline the
- * invisible bounding box instead of the window. */
-.shot img {
+/* Demo */
+
+/* A chrome-less terminal reads as a slab of text on a dark page, so the recording is
+ * framed as a window. The recording keeps the black background it was made on, which
+ * is what separates the screen from the page around it.
+ *
+ * The width is what 80 columns measure at exactly 16px (774px) plus the 1px
+ * borders, so the player is given room for the size it is asked for and no more.
+ * Narrower viewports fall back to scaling the font to fit — see index.html. */
+.demo-window {
+  max-width: 776px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+
+.demo-titlebar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+.demo-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  flex: none;
+  border-radius: 50%;
+}
+
+.demo-dot-a { background: var(--accent); }
+.demo-dot-b { background: var(--chrome); }
+.demo-dot-c { background: var(--chrome-dim); }
+
+/* Centred on the bar itself rather than in the space left over by the dots. */
+.demo-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+}
+
+/* Poster and player are stacked in one box whose height never changes, so neither
+ * starting playback nor the player's initial resize moves the page.
+ *
+ * The box is the 80x30 screen — a ratio, so it holds at any width (see
+ * tools/make-poster.sh) — plus room for the control bar, which the player lays out
+ * below the screen inside its own box at a fixed 34px. Reserving that as padding
+ * rather than folding it into the ratio keeps both parts correct at every width;
+ * without it, overflow clips the controls away and hovering appears to do nothing. */
+.demo {
+  position: relative;
+  box-sizing: content-box;
+  aspect-ratio: 774 / 664;
+  padding-bottom: 34px;
+  background: #000; /* the recording's own background, so no seam at the edges */
+  overflow: hidden;
+}
+
+.demo-screen {
+  position: absolute;
+  inset: 0;
+}
+
+/* Height comes from the image's own proportions, so the poster covers the screen
+ * exactly and leaves the control bar's strip — black, as the player draws it. */
+.demo-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
   width: 100%;
-  max-width: 930px;
   height: auto;
+  z-index: 2;
+  transition: opacity 0.25s ease;
+}
+
+/* The poster stays put until the player is painting, then hands over. Playback hides the
+ * control instead of discarding it, so a failed recording can put both back. */
+.demo.is-playing .demo-poster {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.demo.is-playing .demo-play {
+  display: none;
+}
+
+.demo-play {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(11, 15, 16, 0.62);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.demo-play:hover,
+.demo-play:focus-visible {
+  background: rgba(11, 15, 16, 0.4);
+}
+
+/* The label sits over terminal text, so it carries its own background rather than
+ * relying on the scrim to separate it from whatever line it lands on. */
+.demo-play-label {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--chrome-dim);
+  border-radius: 6px;
+  background: var(--bg-raised);
+  white-space: nowrap;
+}
+
+.demo-play[disabled] {
+  cursor: default;
+  color: var(--fg-dim);
+}
+
+.demo-play-icon {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+}
+
+/* The glyph is a border triangle rather than a character, so it never depends on
+ * the font subset; the nudge right of centre optically balances the circle. */
+.demo-play-icon::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-35%, -50%);
+  border-style: solid;
+  border-width: 0.65rem 0 0.65rem 1.1rem;
+  border-color: transparent transparent transparent var(--accent);
+}
+
+.demo-play[disabled] .demo-play-icon {
+  opacity: 0.4;
+}
+
+.demo-caption {
+  max-width: 776px;
+  margin: 0.9rem auto;
+  color: var(--fg-dim);
+  font-size: 0.8125rem;
+  text-align: center;
 }
 
 /* Features */
 
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
   gap: 1rem;
   padding: 3rem 0;
 }
@@ -147,18 +306,41 @@ a:hover {
   background: var(--bg-raised);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem;
 }
 
 .feature h2 {
-  font-size: 1rem;
+  font-size: 0.875rem;
   margin: 0 0 0.5rem;
+  text-wrap: balance; /* even out the two-line headings rather than leaving one word */
 }
 
 .feature p {
   margin: 0;
   color: var(--fg-dim);
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
+}
+
+/* Commands set as a block, because as inline chips they cannot break and do not fit a
+ * column. 12px is what keeps the longest line inside the narrowest one; the scrollbar
+ * is a backstop for narrower still. */
+.feature pre {
+  margin: 0.6rem 0 0;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.feature pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  white-space: pre;
 }
 
 code {
@@ -170,12 +352,40 @@ code {
   white-space: nowrap; /* an inline chip must not split, e.g. after the / in /provider */
 }
 
+/* Audience and install prose */
+
+/* Across the full 960px column, monospace prose runs to about a hundred characters a line —
+ * well past a comfortable measure, and wide enough that a line routinely ends with one word
+ * stranded on the next. Only the prose narrows; the feature grid above keeps the full width.
+ * The width is the demo window's, so the text column lines up with the terminal in the hero
+ * rather than sitting at some width of its own. */
+.audience,
+.install {
+  max-width: 776px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.audience p,
+.install p {
+  text-wrap: pretty; /* discourage the remaining single-word last lines */
+}
+
+.audience {
+  padding-bottom: 1rem;
+}
+
+.audience p {
+  color: var(--fg-dim);
+}
+
 /* Install */
 
 .install {
   padding-bottom: 4rem;
 }
 
+.audience h2,
 .install h2 {
   font-size: 1.5rem;
 }
@@ -192,7 +402,7 @@ code {
   background: none;
   border: none;
   padding: 0;
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
   white-space: pre; /* restore newlines that the inline-code nowrap would collapse */
 }
 
@@ -204,5 +414,33 @@ footer {
   padding-bottom: 2rem;
   text-align: center;
   color: var(--fg-dim);
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
+}
+
+/* Narrow screens */
+
+/* On a phone the page gutters and the card padding are subtracted from a column that is
+ * already short of room, so both give some back — the terminal window and the code blocks
+ * are what need the width. */
+@media (max-width: 480px) {
+  main, .hero, footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hero {
+    padding-top: 2.5rem;
+  }
+
+  .features {
+    padding: 2rem 0;
+  }
+
+  .feature {
+    padding: 0.9rem 1rem;
+  }
+
+  .install pre {
+    padding: 0.85rem 1rem;
+  }
 }

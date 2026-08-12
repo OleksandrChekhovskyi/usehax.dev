@@ -4,12 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>hax — a minimalist, terminal-native coding agent</title>
+<!-- Shown under the title in search results and link previews, so it does not repeat it.
+     Kept under ~155 characters, the point at which Google truncates. -->
 <meta name="description"
-      content="hax is a minimalist, terminal-native coding agent written in C. A single small binary that streams Markdown in your terminal and works with any LLM provider.">
+      content="A single native C binary that uses a few MBs of RAM. Local models are first-class via llama.cpp and Ollama; also OpenAI, Anthropic, OpenRouter, and Codex.">
+<!-- Link previews. Twitter reads the og:* tags when its own are absent, so only the card
+     type is set separately. og:image has to be absolute; demo-card.png is built by
+     tools/make-poster.sh --card. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://usehax.dev/">
+<meta property="og:title" content="hax — a minimalist, terminal-native coding agent">
+<meta property="og:description"
+      content="A single native C binary that uses a few MBs of RAM. Local models are first-class via llama.cpp and Ollama; also OpenAI, Anthropic, OpenRouter, and Codex.">
+<meta property="og:image" content="https://usehax.dev/demo-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"
+      content="hax in a terminal, editing src/banner.c to add the build version to the banner">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preload" href="fonts/source-code-pro-latin.woff2" as="font" type="font/woff2"
       crossorigin>
 <link rel="stylesheet" href="style.css">
+<script src="demo.js" defer></script>
 </head>
 <body>
 
@@ -24,8 +41,22 @@
     <a class="btn" href="#install">Get started</a>
   </nav>
   <figure class="shot">
-    <img src="screenshot.png" width="930" height="758"
-         alt="hax answering a question about its own source using a local llama.cpp model">
+    <div class="demo-window">
+      <div class="demo-titlebar" aria-hidden="true">
+        <span class="demo-dot demo-dot-a"></span>
+        <span class="demo-dot demo-dot-b"></span>
+        <span class="demo-dot demo-dot-c"></span>
+        <span class="demo-title">hax — 80×30</span>
+      </div>
+      <div class="demo" id="demo">
+        <img class="demo-poster" src="demo-poster.png" width="1548" height="1328"
+             alt="hax editing src/banner.c: a diff that adds the build version to the banner">
+      </div>
+    </div>
+    <figcaption class="demo-caption">
+      A recorded session — gpt-5.6-luna at high reasoning effort, replayed at 2×. Asking what
+      the startup banner reports, then implementing version info in it.
+    </figcaption>
   </figure>
 </header>
 
@@ -33,13 +64,24 @@
   <section class="features" aria-label="Key features">
     <div class="feature">
       <h2><span class="marker">&gt;</span> Lightweight by design</h2>
-      <p>A single native C binary with a small dependency set. Uses a few MBs of memory,
-         so the RAM stays free for your local LLMs.</p>
+      <p>A single native C binary with a small dependency set. Starts instantly, and uses a
+         very small amount of memory (just a few MBs) — so more RAM is left for your local
+         LLMs.</p>
+    </div>
+    <!-- The README runs these two commands inline; as chips they cannot break and so will not
+         fit a grid column, hence the block. Wording otherwise unchanged. -->
+    <div class="feature">
+      <h2><span class="marker">&gt;</span> Local models are first-class</h2>
+      <p>hax auto-discovers the model and runtime capabilities. No custom provider config
+         block needed for the default setup.</p>
+      <pre><code>llama-server -m [model].gguf
+hax --provider llama.cpp</code></pre>
     </div>
     <div class="feature">
-      <h2><span class="marker">&gt;</span> Terminal-native presentation</h2>
-      <p>Streaming Markdown formatting and live tool output, reflowed for your terminal.
-         Only the current line redraws — native scrollback is preserved.</p>
+      <h2><span class="marker">&gt;</span> Respects your terminal</h2>
+      <p>Streaming Markdown and live tool output, reflowed for display in the terminal. Only
+         redraws the current streaming line or the input area, native scrollback is preserved.
+         Does not take over or mess with your terminal.</p>
     </div>
     <div class="feature">
       <h2><span class="marker">&gt;</span> Inspectable</h2>
@@ -47,39 +89,64 @@
          view (Ctrl+T). Optionally collect a detailed wire protocol trace.</p>
     </div>
     <div class="feature">
-      <h2><span class="marker">&gt;</span> Any provider, any model</h2>
-      <p>OpenAI, Anthropic, Codex (via ChatGPT subscription), OpenRouter, llama.cpp,
-         Ollama, and API-compatible endpoints.</p>
+      <h2><span class="marker">&gt;</span> Use any provider/model</h2>
+      <p>Supports OpenAI (+compatible), Anthropic (+compatible), Codex (via ChatGPT
+         subscription), OpenRouter, llama.cpp, etc.</p>
     </div>
     <div class="feature">
-      <h2><span class="marker">&gt;</span> Automation-friendly</h2>
-      <p>Interactive REPL and <code>-p</code> one-shot mode, with clean stdout for scripts
-         and agents, and resume hints on stderr.</p>
+      <h2><span class="marker">&gt;</span> Well-behaved Unix tool</h2>
+      <p>XDG paths, clean stdout in <code>-p</code> one-shot mode with resume hints on stderr,
+         plain-text config and session files, composition via subprocesses instead of
+         plugins.</p>
     </div>
+  </section>
+
+  <section class="audience">
+    <h2><span class="marker">&gt;</span> Target audience</h2>
+    <p>Developers who live in the terminal, run local models, audit what their tools do,
+       package software for distros, or run agents where resources are scarce. If you want MCP
+       marketplaces, a plugin runtime, IDE panels, or per-command permission prompts, other
+       agents build exactly that — hax deliberately doesn't, and
+       <a href="https://github.com/OleksandrChekhovskyi/hax/blob/master/docs/philosophy.md"
+          >docs/philosophy.md</a> explains each omission and the pattern that covers the
+       need.</p>
+    <p>If "fancy new AI tech in an old-school minimalist package" sounds like your vibe, you
+       might like this.</p>
   </section>
 
   <section id="install" class="install">
     <h2><span class="prompt">$</span> Get started</h2>
-    <p>hax runs on Linux and macOS (on Windows, use WSL). With
-       <a href="https://brew.sh">Homebrew</a>:</p>
+    <p>hax runs on Linux and macOS; on Windows, use it under
+       <a href="https://learn.microsoft.com/en-us/windows/wsl/">WSL</a>.</p>
+    <p>With <a href="https://brew.sh">Homebrew</a> (macOS or Linux):</p>
     <pre><code>brew install oleksandrchekhovskyi/hax/hax</code></pre>
-    <p>On Linux, prebuilt static binaries (x86_64 and aarch64) are attached to the
+    <p>On Linux, download the prebuilt static binary for your architecture (x86_64 or aarch64)
+       from the
        <a href="https://github.com/OleksandrChekhovskyi/hax/releases/latest">latest
-       release</a> — unpack <code>hax</code> into any directory on your <code>PATH</code>.
-       Or build from source in seconds; all it takes is a C compiler, libcurl, and jansson:</p>
-    <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax
+       release</a>, then unpack the <code>hax</code> binary into any directory on your
+       <code>PATH</code>.</p>
+    <p>Building from source gives a binary linked against your system's shared libraries
+       instead of a static one:</p>
+    <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax.git
 cd hax
 scripts/install_deps.sh   # Debian/Ubuntu, Fedora, Arch, openSUSE, Alpine, macOS
 make                      # the binary is now at ./build/hax
 make install              # optional; may prompt for sudo</code></pre>
-    <p>Then run it:</p>
-    <pre><code>hax                          # interactive REPL
-hax -p "list TODOs"          # run one prompt, print the final answer
-hax -c                       # continue the latest session for this directory</code></pre>
-    <p>hax picks up a configured provider automatically — an API key in the environment, a
-       <code>codex</code> CLI login, or a running local server like llama.cpp or Ollama. If
-       nothing is set up yet, type <code>/provider</code> in the REPL: the picker lists every
-       provider along with what each one needs.</p>
+    <!-- The README marks every dependency name as code, which here would be eight bordered
+         chips in one sentence, so only the things you actually type stay marked up. -->
+    <p><code>scripts/install_deps.sh</code> installs the build dependencies — a C compiler,
+       libcurl, jansson, meson, ninja, and pkg-config — plus <code>fzf</code>, which hax uses
+       for <code>@file</code> completion when available.</p>
+    <p>Run hax from the project directory you want it to work in:</p>
+    <pre><code>hax                         # interactive REPL
+hax -p "list TODOs"         # run one prompt and print the final answer
+printf "explain x" | hax -p # read the prompt from stdin
+hax -c                      # continue the latest session for this directory
+hax --resume                # pick a past session for this directory
+hax --resume=ID -p "next"   # resume a specific session in one-shot mode</code></pre>
+    <p>The easiest first run is interactive: start <code>hax</code>, then use
+       <code>/provider</code> to see available providers and choose a model. hax remembers
+       interactive provider, model, and effort selections.</p>
     <p>See the <a href="https://github.com/OleksandrChekhovskyi/hax#readme">README</a> for
        provider setup and the full documentation.</p>
   </section>
