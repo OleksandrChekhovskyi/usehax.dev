@@ -116,8 +116,9 @@ hax --provider llama.cpp</code></pre>
 
   <section id="install" class="install">
     <h2><span class="prompt">$</span> Get started</h2>
-    <p>hax runs on Linux and macOS; on Windows, use it under
-       <a href="https://learn.microsoft.com/en-us/windows/wsl/">WSL</a>.</p>
+    <p>hax runs on Linux, macOS, FreeBSD, and OpenBSD; on Windows, use it under
+       <a href="https://learn.microsoft.com/en-us/windows/wsl/">WSL</a>. The BSDs build from
+       source only.</p>
     <p>With <a href="https://brew.sh">Homebrew</a> (macOS or Linux):</p>
     <pre><code>brew install oleksandrchekhovskyi/hax/hax</code></pre>
     <p>On Arch Linux, hax is in the
@@ -129,9 +130,10 @@ hax --provider llama.cpp</code></pre>
        <code>PATH</code>.</p>
     <p>Building from source gives a binary linked against your system's shared libraries
        instead of a static one:</p>
+    <!-- "BSDs" rather than the README's two names: spelling both out overflows the block. -->
     <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax.git
 cd hax
-scripts/install_deps.sh   # Debian/Ubuntu, Fedora, Arch, openSUSE, Alpine, macOS
+scripts/install_deps.sh   # Debian/Ubuntu, Fedora, Arch, openSUSE, Alpine, macOS, BSDs
 make                      # the binary is now at ./build/hax
 make install              # optional; may prompt for sudo</code></pre>
     <!-- The README marks every dependency name as code, which here would be eight bordered
