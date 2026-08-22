@@ -7,7 +7,7 @@
 <!-- Shown under the title in search results and link previews, so it does not repeat it.
      Kept under ~155 characters, the point at which Google truncates. -->
 <meta name="description"
-      content="A single native C binary that uses a few MBs of RAM. Local models are first-class via llama.cpp and Ollama; also OpenAI, Anthropic, OpenRouter, and Codex.">
+      content="A single native C binary using only a few MB of RAM. Local models are first-class; supports OpenAI, Anthropic, Codex, OpenRouter, and OpenCode Zen/Go.">
 <!-- Link previews. Twitter reads the og:* tags when its own are absent, so only the card
      type is set separately. og:image has to be absolute; demo-card.png is built by
      tools/make-poster.sh --card. -->
@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://usehax.dev/">
 <meta property="og:title" content="hax — a minimalist, terminal-native coding agent">
 <meta property="og:description"
-      content="A single native C binary that uses a few MBs of RAM. Local models are first-class via llama.cpp and Ollama; also OpenAI, Anthropic, OpenRouter, and Codex.">
+      content="A single native C binary using only a few MB of RAM. Local models are first-class; supports OpenAI, Anthropic, Codex, OpenRouter, and OpenCode Zen/Go.">
 <meta property="og:image" content="https://usehax.dev/demo-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -64,16 +64,15 @@
   <section class="features" aria-label="Key features">
     <div class="feature">
       <h2><span class="marker">&gt;</span> Lightweight by design</h2>
-      <p>A single native C binary with a small dependency set. Starts instantly, and uses a
-         very small amount of memory (just a few MBs) — so more RAM is left for your local
-         LLMs.</p>
+      <p>A single native C binary with a small dependency set. Starts instantly and uses only
+         a few MB of memory, leaving more RAM for local models.</p>
     </div>
     <!-- The README runs these two commands inline; as chips they cannot break and so will not
          fit a grid column, hence the block. Wording otherwise unchanged. -->
     <div class="feature">
       <h2><span class="marker">&gt;</span> Local models are first-class</h2>
       <p>hax auto-discovers the model and runtime capabilities. No custom provider config
-         block needed for the default setup.</p>
+         block is needed for the default setup.</p>
       <pre><code>llama-server -m [model].gguf
 hax --provider llama.cpp</code></pre>
     </div>
@@ -89,9 +88,20 @@ hax --provider llama.cpp</code></pre>
          view (Ctrl+T). Optionally collect a detailed wire protocol trace.</p>
     </div>
     <div class="feature">
-      <h2><span class="marker">&gt;</span> Use any provider/model</h2>
-      <p>Supports OpenAI (+compatible), Anthropic (+compatible), Codex (via ChatGPT
-         subscription), OpenRouter, llama.cpp, etc.</p>
+      <h2><span class="marker">&gt;</span> Broad provider support</h2>
+      <ul class="provider-list">
+        <li>OpenAI + compatible</li>
+        <li>Anthropic + compatible</li>
+        <li>Codex via ChatGPT subscription</li>
+        <li>OpenRouter</li>
+        <li>OpenCode Zen/Go</li>
+        <li>llama.cpp</li>
+        <li>and more:
+          <a href="https://github.com/OleksandrChekhovskyi/hax/blob/master/docs/providers.md">
+            docs/providers.md
+          </a>
+        </li>
+      </ul>
     </div>
     <div class="feature">
       <h2><span class="marker">&gt;</span> Well-behaved Unix tool</h2>

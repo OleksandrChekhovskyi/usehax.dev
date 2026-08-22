@@ -321,6 +321,17 @@ a:hover {
   font-size: 0.8125rem;
 }
 
+.provider-list {
+  margin: 0;
+  padding-left: 0.8rem;
+  color: var(--fg-dim);
+  font-size: 0.8125rem;
+}
+
+.provider-list li::marker {
+  color: var(--fg-dim);
+}
+
 /* Commands set as a block, because as inline chips they cannot break and do not fit a
  * column. 12px is what keeps the longest line inside the narrowest one; the scrollbar
  * is a backstop for narrower still. */
