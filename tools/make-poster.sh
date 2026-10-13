@@ -151,7 +151,8 @@ if ! kill -0 "$server" 2>/dev/null; then
     exit 1
 fi
 
-"$chromium" --headless --no-sandbox --disable-gpu --hide-scrollbars \
+# Headless Chromium reports a light color scheme; the card uses the dark palette.
+"$chromium" --headless --no-sandbox --disable-gpu --hide-scrollbars --force-dark-mode \
     --user-data-dir="$profile" --force-device-scale-factor="$scale" \
     --window-size="$width,$height" --virtual-time-budget=25000 \
     --screenshot="$root/$out" \

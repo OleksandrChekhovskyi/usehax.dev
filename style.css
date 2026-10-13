@@ -6,8 +6,16 @@
   src: url(fonts/source-code-pro-latin.woff2) format("woff2");
 }
 
-/* Match hax's dark theme (src/terminal/theme.c): cool machine colors, warm user accents. */
+/* Match hax's themes (src/terminal/theme.c): cool machine colors, warm user accents. The demo
+ * keeps the dark palette in either scheme because the recording is dark. */
 :root {
+  --mono: "Source Code Pro", ui-monospace, "SF Mono", "Cascadia Code",
+          "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+:root,
+.demo {
+  color-scheme: dark;
   --bg: #0b0f10;
   --bg-raised: #101617;
   --fg: #ccd4d4;
@@ -16,12 +24,44 @@
   --chrome: #00afaf;
   --chrome-dim: #005f5f;
   --chrome-hover: #007777;
+  --chrome-hover-fg: #00afaf;
+  --bg-button: #101617;
+  --chrome-tint: #0f2223; /* 8% --chrome over --bg-button */
+  --chrome-glow: 0 0 10px rgba(0, 175, 175, 0.2);
   --stance: #00afd7;
   --accent: #d7875f;
   --accent-hover: #e29a73;
+  --accent-glow: 0 0 12px rgba(215, 135, 95, 0.3);
   --border: #12302f;
-  --mono: "Source Code Pro", ui-monospace, "SF Mono", "Cascadia Code",
-          "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --window-border: var(--border);
+  --window-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+
+/* Text roles are darker than the terminal's light theme to reach 4.5:1 on these backgrounds.
+ * Glows read as smudges on a light page, and buttons sit darker than it to stand out. */
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f5f7f7;
+    --bg-raised: #fff;
+    --fg: #1f2a2a;
+    --fg-bright: #0b0f10;
+    --fg-dim: #5a6868;
+    --chrome: #007575;
+    --chrome-dim: #5f8787;
+    --chrome-hover: #007575;
+    --chrome-hover-fg: #005f5f; /* keeps 4.5:1 on the stronger tint */
+    --bg-button: #e8efef;
+    --chrome-tint: #cce0e0; /* 12% --chrome over --bg-button */
+    --chrome-glow: none;
+    --stance: #0072d0; /* bluer than the terminal; 3:1 against --fg, the most 4.5:1 allows */
+    --accent: #a85b00;
+    --accent-hover: #8f4c00;
+    --accent-glow: none;
+    --border: #cfdfde;
+    --window-border: rgba(15, 30, 30, 0.22); /* a light edge would halo the black screen */
+    --window-shadow: 0 2px 6px rgba(15, 30, 30, 0.16), 0 10px 30px rgba(15, 30, 30, 0.36);
+  }
 }
 
 * {
@@ -97,17 +137,19 @@ a:hover {
   padding: 0.6rem 1.4rem;
   border: 1px solid var(--chrome-dim);
   border-radius: 6px;
-  background: var(--bg-raised);
+  background: var(--bg-button);
   color: var(--chrome);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+              box-shadow 0.2s ease;
 }
 
 .btn:hover,
 .btn:focus-visible {
   text-decoration: none;
   border-color: var(--chrome-hover);
-  background: #0f2223; /* 8% --chrome over --bg-raised */
-  box-shadow: 0 0 10px rgba(0, 175, 175, 0.2);
+  background: var(--chrome-tint);
+  color: var(--chrome-hover-fg);
+  box-shadow: var(--chrome-glow);
 }
 
 .btn-primary {
@@ -121,7 +163,8 @@ a:hover {
 .btn-primary:focus-visible {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
-  box-shadow: 0 0 12px rgba(215, 135, 95, 0.3);
+  color: var(--bg);
+  box-shadow: var(--accent-glow);
 }
 
 .shot {
@@ -132,10 +175,10 @@ a:hover {
 .demo-window {
   max-width: 776px;
   margin: 0 auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--window-border);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--window-shadow);
 }
 
 .demo-titlebar {
@@ -145,7 +188,7 @@ a:hover {
   gap: 0.45rem;
   padding: 0.6rem 0.8rem;
   background: var(--bg-raised);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--window-border);
 }
 
 .demo-dot {
@@ -235,7 +278,7 @@ a:hover {
   padding: 0.35rem 0.85rem;
   border: 1px solid var(--chrome-dim);
   border-radius: 6px;
-  background: var(--bg-raised);
+  background: var(--bg-button);
   white-space: nowrap;
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -284,8 +327,8 @@ a:hover {
 .demo-play:not([disabled]):hover .demo-play-label,
 .demo-play:not([disabled]):focus-visible .demo-play-label {
   border-color: var(--chrome-hover);
-  background: #0f2223;
-  box-shadow: 0 0 10px rgba(0, 175, 175, 0.2);
+  background: var(--chrome-tint);
+  box-shadow: var(--chrome-glow);
 }
 
 .demo-play[disabled] .demo-play-icon {
@@ -294,7 +337,7 @@ a:hover {
 
 .demo-caption {
   max-width: 776px;
-  margin: 0.9rem auto;
+  margin: 1.3rem auto 0.5rem auto;
   color: var(--fg-dim);
   font-size: 0.8125rem;
   text-align: center;
@@ -415,6 +458,11 @@ footer {
   text-align: center;
   color: var(--fg-dim);
   font-size: 0.8125rem;
+}
+
+/* Site navigation takes the chrome color, like the buttons; links in prose keep --stance. */
+footer a {
+  color: var(--chrome);
 }
 
 @media (max-width: 480px) {
