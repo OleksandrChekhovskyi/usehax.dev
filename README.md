@@ -78,6 +78,25 @@ changes on click even though the layout does not. It needs chromium and python3;
 update the sizes near the top of `make-poster.sh` and the `aspect-ratio` on `.demo` in
 `style.css` to match.
 
+## The star count
+
+The GitHub button shows the repository's star count, fetched from GitHub's REST API by
+`stars.js`. The API needs no token for public repositories and allows cross-origin requests,
+but limits each visitor's IP to 60 calls an hour, so the formatted count is kept in
+`localStorage` and refetched only after ten minutes.
+
+`stars.js` is deferred, which can let the page paint first, so a small inline script right
+after the button copies the cached count into place before the first paint and a reload shows
+no change. Only a first visit waits on the request, with the slot blank meanwhile. The slot
+holds four characters, and `stars.js` formats every count below 10k to exactly that (`0.9k`,
+`1.2k`) and larger ones to fit (`12k`), so filling it never resizes the button or wraps the
+row; a shorter value is centered. When the request fails with nothing cached, it reads
+`Star`. Without JavaScript the slot is hidden. Below 420px the buttons take less padding to
+stay on one row at 360px; narrower screens stack them.
+
+The star is Octicons' outline star, whose outline sits 0.67 units above the middle of its
+16-unit box; its `viewBox` starts at `-0.67` so it centers on the text like the other icons.
+
 ## License
 
 MIT, see [LICENSE](LICENSE). Third-party files keep their own licenses, each in a

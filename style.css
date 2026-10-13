@@ -100,10 +100,13 @@ a:hover {
   color: var(--stance);
 }
 
+/* Centered on the cap height, which reads as the middle of capitals and digits. The fallback
+ * assumes 0.75em capitals and sets icons slightly high in this font's 0.66em. */
 .icon {
   width: 1em;
   height: 1em;
   vertical-align: -0.125em;
+  vertical-align: calc((1cap - 1em) / 2);
   fill: currentColor;
 }
 
@@ -127,6 +130,7 @@ a:hover {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 3rem;
@@ -139,6 +143,7 @@ a:hover {
   border-radius: 6px;
   background: var(--bg-button);
   color: var(--chrome);
+  white-space: nowrap;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
               box-shadow 0.2s ease;
 }
@@ -165,6 +170,25 @@ a:hover {
   border-color: var(--accent-hover);
   color: var(--bg);
   box-shadow: var(--accent-glow);
+}
+
+.stars {
+  margin-left: 0.7rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+}
+
+/* Fits the longest count stars.js formats, so filling it in never resizes the button. A
+ * shorter one is centered, splitting the spare width between both sides. */
+.stars-count {
+  display: inline-block;
+  min-width: 4ch;
+  text-align: center;
+  transition: opacity 0.15s ease;
+}
+
+.stars-count:empty {
+  opacity: 0;
 }
 
 .shot {
@@ -488,8 +512,10 @@ footer a {
   }
 }
 
-/* Reclaim gutters and step prose down a size so 360px phones fit ~40 columns, not ~36. */
-@media (max-width: 400px) {
+/* Reclaim gutters and step prose down a size so 360px phones fit ~40 columns, not ~36. Starts
+ * at 420px since at full padding the buttons need 402px, plus any classic scrollbar, to share
+ * a row. */
+@media (max-width: 420px) {
   main, .hero, footer {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
@@ -497,6 +523,12 @@ footer a {
 
   .feature {
     padding: 0.75rem;
+  }
+
+  /* Keeps both buttons on one row down to 360px. */
+  .btn {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
   }
 
   .audience p,
