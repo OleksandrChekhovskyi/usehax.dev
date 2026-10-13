@@ -17,11 +17,16 @@
   --bg: #0b0f10;
   --bg-raised: #101617;
   --fg: #ccd4d4;
+  --fg-bright: #fff; /* headings, so they stay a step above body text */
   --fg-dim: #879494;
   --chrome: #00afaf;
   --chrome-dim: #005f5f;
+  /* Hover steps, not theme colours: each is a few points of lightness up from its base,
+   * so cyan and terracotta brighten by about as much as each other. */
+  --chrome-hover: #007777;
   --stance: #00afd7;
   --accent: #d7875f;
+  --accent-hover: #e29a73;
   --border: #12302f;
   --mono: "Source Code Pro", ui-monospace, "SF Mono", "Cascadia Code",
           "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
@@ -80,7 +85,7 @@ a:hover {
   letter-spacing: 0.04em;
   margin: 0.5rem 0;
   font-weight: bold;
-  color: #fff;
+  color: var(--fg-bright);
 }
 
 .tagline {
@@ -95,18 +100,24 @@ a:hover {
   margin-bottom: 3rem;
 }
 
+/* Every button answers hover the same way, the play control included: border and
+ * background step up, and a soft glow in the button's own colour comes in with them. */
 .btn {
   display: inline-block;
   padding: 0.6rem 1.4rem;
   border: 1px solid var(--chrome-dim);
   border-radius: 6px;
+  background: var(--bg-raised);
   color: var(--chrome);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn:hover {
+.btn:hover,
+.btn:focus-visible {
   text-decoration: none;
-  border-color: var(--chrome);
-  background: rgba(0, 175, 175, 0.08);
+  border-color: var(--chrome-hover);
+  background: #0f2223; /* 8% --chrome over --bg-raised */
+  box-shadow: 0 0 10px rgba(0, 175, 175, 0.2);
 }
 
 .btn-primary {
@@ -116,9 +127,11 @@ a:hover {
   font-weight: bold;
 }
 
-.btn-primary:hover {
-  background: #e29a73;
-  border-color: #e29a73;
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 12px rgba(215, 135, 95, 0.3);
 }
 
 .shot {
@@ -220,6 +233,8 @@ a:hover {
   display: none;
 }
 
+/* The scrim only takes the edge off the poster, so the screen reads as a still of the session
+ * rather than a greyed-out placeholder; hover lights the control up instead of lifting it. */
 .demo-play {
   position: absolute;
   inset: 0;
@@ -232,7 +247,7 @@ a:hover {
   width: 100%;
   padding: 0;
   border: 0;
-  background: rgba(11, 15, 16, 0.62);
+  background: rgba(11, 15, 16, 0.2);
   color: var(--fg);
   font: inherit;
   font-size: 0.875rem;
@@ -240,9 +255,9 @@ a:hover {
   transition: background 0.15s ease;
 }
 
-.demo-play:hover,
-.demo-play:focus-visible {
-  background: rgba(11, 15, 16, 0.4);
+.demo-play:not([disabled]):hover,
+.demo-play:not([disabled]):focus-visible {
+  background: rgba(11, 15, 16, 0.1);
 }
 
 /* The label sits over terminal text, so it carries its own background rather than
@@ -253,6 +268,7 @@ a:hover {
   border-radius: 6px;
   background: var(--bg-raised);
   white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .demo-play[disabled] {
@@ -260,12 +276,17 @@ a:hover {
   color: var(--fg-dim);
 }
 
+/* Filled for the same reason as the label: the light scrim no longer separates the
+ * circle from the text beneath it. */
 .demo-play-icon {
   position: relative;
   width: 4rem;
   height: 4rem;
   border: 2px solid var(--accent);
   border-radius: 50%;
+  background: var(--bg-raised);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* The glyph is a border triangle rather than a character, so it never depends on
@@ -279,6 +300,28 @@ a:hover {
   border-style: solid;
   border-width: 0.65rem 0 0.65rem 1.1rem;
   border-color: transparent transparent transparent var(--accent);
+}
+
+/* The same hover as .btn, down to the tints, which are blended in advance so that both
+ * parts stay opaque over the terminal text; the drop shadow stays under the glow so the
+ * circle keeps its lift. */
+.demo-play:not([disabled]):hover .demo-play-icon,
+.demo-play:not([disabled]):focus-visible .demo-play-icon {
+  border-color: var(--accent-hover);
+  background: #201f1d; /* 8% --accent over --bg-raised */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(215, 135, 95, 0.45);
+}
+
+.demo-play:not([disabled]):hover .demo-play-icon::before,
+.demo-play:not([disabled]):focus-visible .demo-play-icon::before {
+  border-left-color: var(--accent-hover);
+}
+
+.demo-play:not([disabled]):hover .demo-play-label,
+.demo-play:not([disabled]):focus-visible .demo-play-label {
+  border-color: var(--chrome-hover);
+  background: #0f2223;
+  box-shadow: 0 0 10px rgba(0, 175, 175, 0.2);
 }
 
 .demo-play[disabled] .demo-play-icon {
@@ -310,6 +353,7 @@ a:hover {
 }
 
 .feature h2 {
+  color: var(--fg-bright);
   font-size: 0.875rem;
   margin: 0 0 0.5rem;
   text-wrap: balance; /* even out the two-line headings rather than leaving one word */
@@ -317,14 +361,12 @@ a:hover {
 
 .feature p {
   margin: 0;
-  color: var(--fg-dim);
   font-size: 0.8125rem;
 }
 
 .provider-list {
   margin: 0;
   padding-left: 0.8rem;
-  color: var(--fg-dim);
   font-size: 0.8125rem;
 }
 
@@ -386,10 +428,6 @@ code {
   padding-bottom: 1rem;
 }
 
-.audience p {
-  color: var(--fg-dim);
-}
-
 /* Install */
 
 .install {
@@ -398,6 +436,7 @@ code {
 
 .audience h2,
 .install h2 {
+  color: var(--fg-bright);
   font-size: 1.5rem;
 }
 
