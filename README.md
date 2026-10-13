@@ -77,3 +77,9 @@ changes on click even though the layout does not. It needs chromium and python3;
 `make-gif.py` needs agg, Pillow, and the Source Code Pro and DejaVu fonts. If the new recording is not 80x30,
 update the sizes near the top of `make-poster.sh` and the `aspect-ratio` on `.demo` in
 `style.css` to match.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Third-party files keep their own licenses, each in a
+`<component>.LICENSE` beside them: asciinema-player in `vendor/` (Apache-2.0) and Source Code
+Pro in `fonts/` (SIL Open Font License).
