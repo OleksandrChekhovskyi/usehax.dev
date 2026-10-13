@@ -1,10 +1,3 @@
-/* Palette transcribed from hax's own dark theme (src/terminal/theme.c):
- * chrome cyan 37, chrome-dim 23, stance/model teal 38, user terracotta 173.
- * Same logic as the TUI: cool colors are the machine, the one warm color
- * marks the user — so terracotta goes on prompts and calls to action. */
-/* Same face as the recording's terminal. Self-hosted variable font
- * (latin subset, weights 400-700, OFL — see fonts/OFL.txt); the system
- * stack below covers glyphs outside the subset and the load window. */
 @font-face {
   font-family: "Source Code Pro";
   font-style: normal;
@@ -13,16 +6,15 @@
   src: url(fonts/source-code-pro-latin.woff2) format("woff2");
 }
 
+/* Match hax's dark theme (src/terminal/theme.c): cool machine colors, warm user accents. */
 :root {
   --bg: #0b0f10;
   --bg-raised: #101617;
   --fg: #ccd4d4;
-  --fg-bright: #fff; /* headings, so they stay a step above body text */
+  --fg-bright: #fff;
   --fg-dim: #879494;
   --chrome: #00afaf;
   --chrome-dim: #005f5f;
-  /* Hover steps, not theme colours: each is a few points of lightness up from its base,
-   * so cyan and terracotta brighten by about as much as each other. */
   --chrome-hover: #007777;
   --stance: #00afd7;
   --accent: #d7875f;
@@ -100,8 +92,6 @@ a:hover {
   margin-bottom: 3rem;
 }
 
-/* Every button answers hover the same way, the play control included: border and
- * background step up, and a soft glow in the button's own colour comes in with them. */
 .btn {
   display: inline-block;
   padding: 0.6rem 1.4rem;
@@ -138,15 +128,7 @@ a:hover {
   margin: 0;
 }
 
-/* Demo */
-
-/* A chrome-less terminal reads as a slab of text on a dark page, so the recording is
- * framed as a window. The recording keeps the black background it was made on, which
- * is what separates the screen from the page around it.
- *
- * The width is what 80 columns measure at exactly 16px (774px) plus the 1px
- * borders, so the player is given room for the size it is asked for and no more.
- * Narrower viewports fall back to scaling the font to fit — see index.html. */
+/* 80 columns at 16px plus two 1px borders; keep in sync with TERMINAL_WIDTH in demo.js. */
 .demo-window {
   max-width: 776px;
   margin: 0 auto;
@@ -177,7 +159,7 @@ a:hover {
 .demo-dot-b { background: var(--chrome); }
 .demo-dot-c { background: var(--chrome-dim); }
 
-/* Centred on the bar itself rather than in the space left over by the dots. */
+/* Center on the full bar, not the space remaining beside the dots. */
 .demo-title {
   position: absolute;
   left: 0;
@@ -187,20 +169,14 @@ a:hover {
   color: var(--fg-dim);
 }
 
-/* Poster and player are stacked in one box whose height never changes, so neither
- * starting playback nor the player's initial resize moves the page.
- *
- * The box is the 80x30 screen — a ratio, so it holds at any width (see
- * tools/make-poster.sh) — plus room for the control bar, which the player lays out
- * below the screen inside its own box at a fixed 34px. Reserving that as padding
- * rather than folding it into the ratio keeps both parts correct at every width;
- * without it, overflow clips the controls away and hovering appears to do nothing. */
+/* Match the 80x30 screen in tools/make-poster.sh to prevent playback layout shifts.
+ * Reserve the fixed 34px control bar separately so it is not scaled or clipped. */
 .demo {
   position: relative;
   box-sizing: content-box;
   aspect-ratio: 774 / 664;
   padding-bottom: 34px;
-  background: #000; /* the recording's own background, so no seam at the edges */
+  background: #000; /* match the recording to avoid seams */
   overflow: hidden;
 }
 
@@ -209,8 +185,6 @@ a:hover {
   inset: 0;
 }
 
-/* Height comes from the image's own proportions, so the poster covers the screen
- * exactly and leaves the control bar's strip — black, as the player draws it. */
 .demo-poster {
   position: absolute;
   top: 0;
@@ -222,8 +196,6 @@ a:hover {
   transition: opacity 0.25s ease;
 }
 
-/* The poster stays put until the player is painting, then hands over. Playback hides the
- * control instead of discarding it, so a failed recording can put both back. */
 .demo.is-playing .demo-poster {
   opacity: 0;
   pointer-events: none;
@@ -233,8 +205,6 @@ a:hover {
   display: none;
 }
 
-/* The scrim only takes the edge off the poster, so the screen reads as a still of the session
- * rather than a greyed-out placeholder; hover lights the control up instead of lifting it. */
 .demo-play {
   position: absolute;
   inset: 0;
@@ -260,8 +230,7 @@ a:hover {
   background: rgba(11, 15, 16, 0.1);
 }
 
-/* The label sits over terminal text, so it carries its own background rather than
- * relying on the scrim to separate it from whatever line it lands on. */
+/* Keep the label opaque for legibility over terminal text. */
 .demo-play-label {
   padding: 0.35rem 0.85rem;
   border: 1px solid var(--chrome-dim);
@@ -276,8 +245,6 @@ a:hover {
   color: var(--fg-dim);
 }
 
-/* Filled for the same reason as the label: the light scrim no longer separates the
- * circle from the text beneath it. */
 .demo-play-icon {
   position: relative;
   width: 4rem;
@@ -289,8 +256,7 @@ a:hover {
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* The glyph is a border triangle rather than a character, so it never depends on
- * the font subset; the nudge right of centre optically balances the circle. */
+/* Avoid font-dependent glyphs; the rightward offset optically centers the triangle. */
 .demo-play-icon::before {
   content: "";
   position: absolute;
@@ -302,9 +268,7 @@ a:hover {
   border-color: transparent transparent transparent var(--accent);
 }
 
-/* The same hover as .btn, down to the tints, which are blended in advance so that both
- * parts stay opaque over the terminal text; the drop shadow stays under the glow so the
- * circle keeps its lift. */
+/* Preblend hover tints to keep backgrounds opaque over terminal text. */
 .demo-play:not([disabled]):hover .demo-play-icon,
 .demo-play:not([disabled]):focus-visible .demo-play-icon {
   border-color: var(--accent-hover);
@@ -336,8 +300,6 @@ a:hover {
   text-align: center;
 }
 
-/* Features */
-
 .features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
@@ -356,7 +318,7 @@ a:hover {
   color: var(--fg-bright);
   font-size: 0.875rem;
   margin: 0 0 0.5rem;
-  text-wrap: balance; /* even out the two-line headings rather than leaving one word */
+  text-wrap: balance;
 }
 
 .feature p {
@@ -374,9 +336,7 @@ a:hover {
   color: var(--fg-dim);
 }
 
-/* Commands set as a block, because as inline chips they cannot break and do not fit a
- * column. 12px is what keeps the longest line inside the narrowest one; the scrollbar
- * is a backstop for narrower still. */
+/* 12px keeps the longest command within a 290px grid column. */
 .feature pre {
   margin: 0.6rem 0 0;
   padding: 0.5rem 0.65rem;
@@ -402,16 +362,10 @@ code {
   border-radius: 4px;
   padding: 0.1em 0.35em;
   font-size: 0.9em;
-  white-space: nowrap; /* an inline chip must not split, e.g. after the / in /provider */
+  white-space: nowrap;
 }
 
-/* Audience and install prose */
-
-/* Across the full 960px column, monospace prose runs to about a hundred characters a line —
- * well past a comfortable measure, and wide enough that a line routinely ends with one word
- * stranded on the next. Only the prose narrows; the feature grid above keeps the full width.
- * The width is the demo window's, so the text column lines up with the terminal in the hero
- * rather than sitting at some width of its own. */
+/* Limit prose line length while aligning it with the demo window. */
 .audience,
 .install {
   max-width: 776px;
@@ -421,14 +375,12 @@ code {
 
 .audience p,
 .install p {
-  text-wrap: pretty; /* discourage the remaining single-word last lines */
+  text-wrap: pretty;
 }
 
 .audience {
   padding-bottom: 1rem;
 }
-
-/* Install */
 
 .install {
   padding-bottom: 4rem;
@@ -453,10 +405,8 @@ code {
   border: none;
   padding: 0;
   font-size: 0.8125rem;
-  white-space: pre; /* restore newlines that the inline-code nowrap would collapse */
+  white-space: pre;
 }
-
-/* Footer */
 
 footer {
   border-top: 1px solid var(--border);
@@ -467,11 +417,6 @@ footer {
   font-size: 0.8125rem;
 }
 
-/* Narrow screens */
-
-/* On a phone the page gutters and the card padding are subtracted from a column that is
- * already short of room, so both give some back — the terminal window and the code blocks
- * are what need the width. */
 @media (max-width: 480px) {
   main, .hero, footer {
     padding-left: 1rem;

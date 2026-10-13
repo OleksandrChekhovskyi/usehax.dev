@@ -1,16 +1,11 @@
 * text=auto eol=lf
 
-# Generated artifacts. The recording is machine-written JSON lines; the poster and the link
-# preview card are rendered from it by tools/make-poster.sh, the animation and its still by
-# tools/make-gif.py. All are replaced wholesale rather than edited, so a line diff is noise.
-# `binary` also keeps the recording byte-exact.
+# Generated assets are replaced wholesale; suppress line diffs and preserve recording bytes.
 *.cast binary linguist-generated=true
 demo-poster.png linguist-generated=true
 demo-card.png linguist-generated=true
 demo.gif linguist-generated=true
 demo-still.png linguist-generated=true
 
-# Upstream asciinema-player build, committed so the page needs no build step or CDN.
-# Not this project's code, and a minified bundle would otherwise decide the repository's
-# reported language.
+# Exclude upstream bundles from repository language statistics.
 vendor/** linguist-vendored=true
