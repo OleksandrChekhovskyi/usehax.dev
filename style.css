@@ -439,3 +439,20 @@ footer {
     padding: 0.85rem 1rem;
   }
 }
+
+/* Reclaim gutters and step prose down a size so 360px phones fit ~40 columns, not ~36. */
+@media (max-width: 400px) {
+  main, .hero, footer {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .feature {
+    padding: 0.75rem;
+  }
+
+  .audience p,
+  .install p {
+    font-size: 14px;
+  }
+}
