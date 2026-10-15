@@ -142,13 +142,16 @@ hax --provider llama.cpp</code></pre>
     <pre><code>brew install oleksandrchekhovskyi/hax/hax</code></pre>
     <p>On Arch Linux, hax is in the
        <a href="https://aur.archlinux.org/packages/hax">AUR</a> as <code>hax</code>.</p>
-    <p>On any Linux distribution, download the prebuilt static binary for your architecture
-       (x86_64 or aarch64) from the
+    <p>Alternatively, prebuilt binaries for Linux (x86_64 and aarch64) and macOS (Apple
+       Silicon) are available from the
        <a href="https://github.com/OleksandrChekhovskyi/hax/releases/latest">latest
-       release</a>, then unpack the <code>hax</code> binary into any directory on your
-       <code>PATH</code>.</p>
+       release</a>: unpack the <code>hax</code> binary into any directory on your
+       <code>PATH</code>. The Linux binaries are fully static, and the macOS one needs only
+       libraries that ship with macOS. If macOS refuses to run a binary downloaded through a
+       browser, clear its quarantine flag with
+       <code>xattr -d com.apple.quarantine hax</code>.</p>
     <p>Building from source gives a binary linked against your system's shared libraries
-       instead of a static one:</p>
+       instead of the libraries the prebuilt binaries bundle:</p>
     <pre><code>git clone https://github.com/OleksandrChekhovskyi/hax.git
 cd hax
 scripts/install_deps.sh   # Debian/Ubuntu, Fedora, Arch, openSUSE, Alpine, macOS, BSDs
