@@ -97,6 +97,17 @@ stay on one row at 360px; narrower screens stack them.
 The star is Octicons' outline star, whose outline sits 0.67 units above the middle of its
 16-unit box; its `viewBox` starts at `-0.67` so it centers on the text like the other icons.
 
+## OAuth client metadata
+
+`hax-mcp.json` is the [Client ID Metadata
+Document](https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/) that
+identifies [hax-mcp](https://github.com/OleksandrChekhovskyi/hax-mcp) to OAuth authorization
+servers: its URL is hax-mcp's `client_id`, and servers fetch it during login. Authorization
+servers compare that URL as an exact string and treat any other URL as a different client, so
+the file must stay at this path. Its `client_id` must match the URL exactly, and its
+`redirect_uris` must list the loopback ports hax-mcp listens on (`REDIRECT_PORTS` in its
+source); servers reject a login whose redirect is not listed.
+
 ## License
 
 MIT, see [LICENSE](LICENSE). Third-party files keep their own licenses, each in a

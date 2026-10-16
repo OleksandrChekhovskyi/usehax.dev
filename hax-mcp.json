@@ -1,0 +1,12 @@
+{
+  "client_id": "https://usehax.dev/hax-mcp.json",
+  "client_name": "hax-mcp",
+  "client_uri": "https://usehax.dev",
+  "redirect_uris": [
+    "http://127.0.0.1:28471/callback",
+    "http://127.0.0.1:28472/callback"
+  ],
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none"
+}
